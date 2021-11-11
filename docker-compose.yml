@@ -38,7 +38,7 @@ services:
       - GRAPHQL_URI=http://${GQL_NAME}:4002/graphql
       - 4002:${GQL_PORT}
     volumes:
-      - ./schema:/schema
+      - ./schema:/schema/Origin_Schema
     links:
     - ${NEO4j_NAME}
     depends_on:
