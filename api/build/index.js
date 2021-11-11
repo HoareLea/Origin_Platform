@@ -76,7 +76,7 @@ var neo4jGraphQL = new Neo4jGraphQL({
 });
 
 var schema = neo4jGraphQL.schema;
-console.log(schema);
+
 /*
 * Create a Neo4j driver instance to connect to the database
 * using credentials specified as environment variables
