@@ -41,7 +41,7 @@ const resolvers = {
  */
 const neo4jGraphQL = new Neo4jGraphQL({
   typeDefs,
-  //resolvers, 
+  resolvers, 
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   config: {
     auth: {
@@ -52,7 +52,7 @@ const neo4jGraphQL = new Neo4jGraphQL({
 });
 
 const schema = neo4jGraphQL.schema;
-
+console.log(schema);
 /*
 * Create a Neo4j driver instance to connect to the database
 * using credentials specified as environment variables

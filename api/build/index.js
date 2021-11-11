@@ -18,11 +18,11 @@ var _dotenv = require("dotenv");
 
 var _dotenv2 = _interopRequireDefault(_dotenv);
 
+require("babel-polyfill");
+
 var _UnitFloatScalarType = require("./units/UnitFloatScalarType");
 
 var _UnitFloatScalarType2 = _interopRequireDefault(_UnitFloatScalarType);
-
-require("babel-polyfill");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -65,7 +65,7 @@ var resolvers = {
  */
 var neo4jGraphQL = new Neo4jGraphQL({
   typeDefs: _graphqlSchema.typeDefs,
-  //resolvers, 
+  resolvers: resolvers,
   plugins: [(0, _apolloServerCore.ApolloServerPluginDrainHttpServer)({ httpServer: httpServer })],
   config: {
     auth: {
@@ -76,7 +76,7 @@ var neo4jGraphQL = new Neo4jGraphQL({
 });
 
 var schema = neo4jGraphQL.schema;
-
+console.log(schema);
 /*
 * Create a Neo4j driver instance to connect to the database
 * using credentials specified as environment variables
@@ -150,7 +150,7 @@ var startServer = function () {
             });
 
           case 8:
-            console.log("\uD83D\uDE80 Server ready at http://localhost:" + port + path);
+            console.log("\uD83D\uDE80 Server listening at http://localhost:" + port + path);
 
           case 9:
           case "end":
