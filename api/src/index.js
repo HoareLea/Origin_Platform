@@ -1,37 +1,23 @@
-import { typeDefs } from "./graphql-schema";
+
+import  * as graphqlschema from "./graphql-schema";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
 import express from "express";
 import dotenv from "dotenv";
 import "babel-polyfill";
-import UnitFloatScalarType from "./units/UnitFloatScalarType"
 
 
 const neo4j = require("neo4j-driver");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 // Set environment variables from ../.env
+
 dotenv.config();
 
 // Create express app
 const app = express();
 const httpServer = http.createServer(app);
-
-// List all custom resolvers
-const resolvers = {
-  UnitFloat: new UnitFloatScalarType("UnitFloat"),
-  Meters: new UnitFloatScalarType("Meters", "m"),
-  SquareMeters: new UnitFloatScalarType("SquareMeters", "m2"),
-  CubicMilliMeters: new UnitFloatScalarType("CubicMilliMeters", "mm3"),
-  CubicMeters: new UnitFloatScalarType("CubicMeters", "m3"),
-  Amperes: new UnitFloatScalarType("Amperes", "A"),
-  Kiloamperes: new UnitFloatScalarType("Kiloamperes", "kA"),
-  Milliamperes: new UnitFloatScalarType("Milliamperes", "mA"),
-  Watts: new UnitFloatScalarType("Watts", "W"),
-  VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
-  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s")
-};
 
 /*
  * Create an executable GraphQL schema object from GraphQL type definitions
@@ -39,9 +25,10 @@ const resolvers = {
  * Optionally a config object can be included to specify which types to include
  * in generated queries and/or mutations.  
  */
+const typeDefs = graphqlschema.getTypeDefs();
+
 const neo4jGraphQL = new Neo4jGraphQL({
   typeDefs,
-  resolvers, 
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   config: {
     auth: {
@@ -50,6 +37,8 @@ const neo4jGraphQL = new Neo4jGraphQL({
     }
   }
 });
+
+
 
 const schema = neo4jGraphQL.schema;
 
@@ -107,6 +96,8 @@ const startServer = async () => {
 
   await server.start();
 
+  //await neo4jGraphQL.assertConstraints({ options: { create: true }});
+  
   /*
   * Optionally, apply Express middleware for authentication, etc
   * This also also allows us to specify a path for the GraphQL endpoint
@@ -119,6 +110,8 @@ const startServer = async () => {
 
   await new Promise(resolve => httpServer.listen({ port: port, path: path }, resolve));
   console.log(`🚀 Server listening at http://localhost:${port}${path}`);
+
+  
 }
 
 startServer();
