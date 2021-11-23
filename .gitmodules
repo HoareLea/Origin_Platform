@@ -2,3 +2,7 @@
 	path = schema/Origin_Schema
 	url = https://github.com/HoareLea/Origin_Schema.git
 	branch = dev
+[submodule "Origin_Schema"]
+	path = Origin_Schema
+	url = https://github.com/HoareLea/Origin_Schema.git
+	branch = dev
