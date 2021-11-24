@@ -5,7 +5,13 @@ import path from "path";
 /**
  * Load graphql schemas form schema/Origin_Schema directory recursively
  */
-const schemaDir = path.join(__dirname, '../../schema/Origin_Schema');
-const typesArray = loadFilesSync(schemaDir, { recursive: true, extensions: ['graphql'] })
+export function getTypeDefs()
+{  
+    const schemaDir = path.join(__dirname, '../../schema/' + process.env.SCHEMA_ROOT);
+    console.log("Loading GraphQL types from: " + schemaDir);
+    const typesArray = loadFilesSync(schemaDir, { recursive: true, extensions: ['graphql'] })
 
-export const typeDefs = mergeTypeDefs(typesArray);
+    return mergeTypeDefs(typesArray);
+}
+
+

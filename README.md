@@ -43,3 +43,9 @@ Update Origin_Schema submodule:
 cd schema
 git submodule update --remote
 ```
+
+## Suggested Plugins
+
+https://github.com/neo4j-contrib/neo4j-apoc-procedures
+https://github.com/h-omer/neo4j-versioner-core
+https://github.com/neo4j/graph-data-science
