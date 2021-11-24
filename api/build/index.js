@@ -142,17 +142,19 @@ var startServer = function () {
             server.applyMiddleware({ app: app });
 
             // Specify port and path for GraphQL endpoint
-            port = process.env.GRAPHQL_LISTEN_PORT || 4001;
+            port = process.env.GQL_PORT || 4001;
             path = "/graphql";
-            _context.next = 8;
+
+            console.log(path);
+            _context.next = 9;
             return new Promise(function (resolve) {
               return httpServer.listen({ port: port, path: path }, resolve);
             });
 
-          case 8:
+          case 9:
             console.log("\uD83D\uDE80 Server listening at http://localhost:" + port + path);
 
-          case 9:
+          case 10:
           case "end":
             return _context.stop();
         }

@@ -114,9 +114,9 @@ const startServer = async () => {
   server.applyMiddleware({ app });
 
   // Specify port and path for GraphQL endpoint
-  const port = process.env.GRAPHQL_LISTEN_PORT || 4001;
+  const port = process.env.GQL_PORT || 4001;
   const path = "/graphql";
-
+  
   await new Promise(resolve => httpServer.listen({ port: port, path: path }, resolve));
   console.log(`🚀 Server listening at http://localhost:${port}${path}`);
 }
