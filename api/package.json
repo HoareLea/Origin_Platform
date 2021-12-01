@@ -1,0 +1,65 @@
+{
+  "name": "origin-platform-api",
+  "version": "0.0.1",
+  "description": "API app for GRANDstack",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "./node_modules/.bin/nodemon --inspect=9229 --watch src --ext js,graphql --exec babel-node  src/index.js",
+    "build": "babel src -d build",
+    "now-build": "babel src -d build; cp .env build; cp src/schema.graphql build",
+    "copy-res": "node copyResources.js",
+    "start": "npm run build && node build/index.js"
+  },
+  "author": "DE Hoare Lea",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/client": "^3.4.16",
+    "@babel/runtime": "^7.16.3",
+    "@graphql-tools/graphql-file-loader": "^7.3.2",
+    "@graphql-tools/load": "^7.4.1",
+    "@graphql-tools/load-files": "^6.5.2",
+    "@graphql-tools/merge": "^8.2.1",
+    "@neo4j/graphql": "^2.4.0",
+    "apollo-server": "^3.4.0",
+    "apollo-server-core": "^3.5.0",
+    "apollo-server-express": "^3.5.0",
+    "apollo-server-lambda": "^3.4.0",
+    "convert-units": "^2.3.4",
+    "core-js": "^3.19.1",
+    "csv-parse": "^4.10.1",
+    "express": "^4.17.1",
+    "express-jwt": "^6.1.0",
+    "graphql": "^15.7.2",
+    "graphql-tools": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "ncp": "^2.0.0",
+    "neo4j-driver": "^4.3.4",
+    "node-fetch": "^2.6.0",
+    "passport": "^0.5.0",
+    "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.16.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "dotenv": "^10.0.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^11.2.6",
+    "ncp": "^2.0.0",
+    "nodemon": "^2.0.14",
+    "rimraf": "^3.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md,graphql": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
