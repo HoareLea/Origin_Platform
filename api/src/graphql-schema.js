@@ -9,7 +9,9 @@ export function getTypeDefs()
 {  
     const schemaDir = path.join(__dirname, '../../schema/' + process.env.SCHEMA_ROOT);
     console.log("Loading GraphQL types from: " + schemaDir);
-    const typesArray = loadFilesSync(schemaDir, { recursive: true, extensions: ['graphql'] })
+    const allSchemaDirs = schemaDir.split(";");
+
+    const typesArray = loadFilesSync(allSchemaDirs, { recursive: true, extensions: ['graphql'] })
 
     return mergeTypeDefs(typesArray);
 }

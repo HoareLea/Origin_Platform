@@ -5,6 +5,7 @@
  */
 
 import * as graphqlschema from "./graphql-schema";
+import JsonScalarType from "./units/JsonScalarType"
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
@@ -35,7 +36,8 @@ const resolvers = {
   Milliamperes: new UnitFloatScalarType("Milliamperes", "mA"),
   Watts: new UnitFloatScalarType("Watts", "W"),
   VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
-  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s")
+  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),
+  JsonParam : new JsonScalarType("JsonParam")
 };
 
 /*
