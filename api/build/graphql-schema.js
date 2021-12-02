@@ -21,7 +21,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function getTypeDefs() {
     var schemaDir = _path2.default.join(__dirname, '../../schema/' + process.env.SCHEMA_ROOT);
     console.log("Loading GraphQL types from: " + schemaDir);
-    var typesArray = (0, _loadFiles.loadFilesSync)(schemaDir, { recursive: true, extensions: ['graphql'] });
+    var allSchemaDirs = schemaDir.split(";");
+
+    var typesArray = (0, _loadFiles.loadFilesSync)(allSchemaDirs, { recursive: true, extensions: ['graphql'] });
 
     return (0, _merge.mergeTypeDefs)(typesArray);
 }

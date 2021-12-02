@@ -4,6 +4,10 @@ var _graphqlSchema = require("./graphql-schema");
 
 var graphqlschema = _interopRequireWildcard(_graphqlSchema);
 
+var _JsonScalarType = require("./units/JsonScalarType");
+
+var _JsonScalarType2 = _interopRequireDefault(_JsonScalarType);
+
 var _apolloServerExpress = require("apollo-server-express");
 
 var _apolloServerCore = require("apollo-server-core");
@@ -62,7 +66,8 @@ var resolvers = {
   Milliamperes: new _UnitFloatScalarType2.default("Milliamperes", "mA"),
   Watts: new _UnitFloatScalarType2.default("Watts", "W"),
   VoltAmperes: new _UnitFloatScalarType2.default("VoltAmperes", "VA"),
-  LitersPerSecond: new _UnitFloatScalarType2.default("LitersPerSecond", "l_per_s")
+  LitersPerSecond: new _UnitFloatScalarType2.default("LitersPerSecond", "l_per_s"),
+  JsonParam: new _JsonScalarType2.default("JsonParam")
 };
 
 /*
