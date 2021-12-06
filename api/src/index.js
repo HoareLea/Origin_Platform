@@ -37,7 +37,8 @@ const resolvers = {
   Watts: new UnitFloatScalarType("Watts", "W"),
   VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
   LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),
-  JsonParam : new JsonScalarType("JsonParam")
+  LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
+  JsonParam: new JsonScalarType("JsonParam")
 };
 
 /*
@@ -74,6 +75,7 @@ const startServer = async () => {
 
   const schema = neo4jGraphQL.schema;
   //await neo4jGraphQL.assertConstraints({ options: { create: true }});
+
 
   const server = new ApolloServer({
     typeDefs,
