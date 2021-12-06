@@ -67,6 +67,7 @@ var resolvers = {
   Watts: new _UnitFloatScalarType2.default("Watts", "W"),
   VoltAmperes: new _UnitFloatScalarType2.default("VoltAmperes", "VA"),
   LitersPerSecond: new _UnitFloatScalarType2.default("LitersPerSecond", "l_per_s"),
+  LitersPerSecondPerSquareMeters: new _UnitFloatScalarType2.default("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
   JsonParam: new _JsonScalarType2.default("JsonParam")
 };
 
@@ -104,6 +105,7 @@ var startServer = function () {
             schema = neo4jGraphQL.schema;
             //await neo4jGraphQL.assertConstraints({ options: { create: true }});
 
+
             server = new _apolloServerExpress.ApolloServer({
               typeDefs: typeDefs,
               resolvers: resolvers,
@@ -126,7 +128,10 @@ var startServer = function () {
             server.applyMiddleware({ app: app });
 
             // Specify port and path for GraphQL endpoint
-            port = process.env.GQL_PORT || 4001;
+            //this is the internal listen port for the server
+            //when used in a docker container, or, the external port
+            //when not used in a container
+            port = process.env.GRAPHQL_LISTEN_PORT || 4001;
             path = "/graphql";
             _context.next = 12;
             return new Promise(function (resolve) {
