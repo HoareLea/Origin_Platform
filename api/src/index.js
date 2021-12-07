@@ -37,7 +37,7 @@ const resolvers = {
   Watts: new UnitFloatScalarType("Watts", "W"),
   VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
   LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),
-  LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
+  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
   JsonParam: new JsonScalarType("JsonParam")
 };
 
