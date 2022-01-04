@@ -19,9 +19,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Load graphql schemas form schema/Origin_Schema directory recursively
  */
 function getTypeDefs() {
-    var schemaDir = _path2.default.join(__dirname, '../../schema/' + process.env.SCHEMA_ROOT);
-    console.log("Loading GraphQL types from: " + schemaDir);
-    var allSchemaDirs = schemaDir.split(";");
+    var schemaRoot = process.env.SCHEMA_ROOT || "";
+
+    var allSchemaDirs = schemaRoot.split(";").map(function (s) {
+        var schemaDir = _path2.default.join(__dirname, '../../schema/' + s);
+        console.log("Loading GraphQL types from: " + schemaDir);
+        return schemaDir;
+    });
 
     var typesArray = (0, _loadFiles.loadFilesSync)(allSchemaDirs, { recursive: true, extensions: ['graphql'] });
 

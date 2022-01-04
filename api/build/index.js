@@ -67,7 +67,7 @@ var resolvers = {
   Watts: new _UnitFloatScalarType2.default("Watts", "W"),
   VoltAmperes: new _UnitFloatScalarType2.default("VoltAmperes", "VA"),
   LitersPerSecond: new _UnitFloatScalarType2.default("LitersPerSecond", "l_per_s"),
-  LitersPerSecondPerSquareMeters: new _UnitFloatScalarType2.default("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
+  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
   JsonParam: new _JsonScalarType2.default("JsonParam")
 };
 
