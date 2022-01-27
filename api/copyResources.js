@@ -3,6 +3,7 @@ var ncp = require('ncp').ncp;
 ncp.limit = 1;
 
 doCopy(".env", "build/.env")
+doCopy("./src/authConfig.json", "build/authConfig.json")
 //This is no longer required
 //doCopy("../schema/types", "schema/types")
 
