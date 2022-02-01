@@ -17,36 +17,36 @@ const resolvers = {
   JsonParam: new JsonScalarType("JsonParam"),
 
   //Custom resolver to search for RDT spaces by name, sectors, TC_Approved and isExisting
-  Query: {
-    searchRDTSpacesWithFilters: async (parent, args, context, info) => {
-      console.log('CUSTOM RESOLVER')
-      console.log(args)
-      if (args.searchString == '') args.searchString = "*";
+  // Query: {
+  //   searchRDTSpacesWithFilters: async (parent, args, context, info) => {
+  //     console.log('CUSTOM RESOLVER')
+  //     console.log(args)
+  //     if (args.searchString == '') args.searchString = "*";
 
-      const session = context.driver.session();
-      try {
-        const result = await session.run(
-          `CALL db.index.fulltext.queryNodes('fulltext_index_space_name', $searchString + '~')
-            YIELD node
-            WITH node
-            MATCH (s:Sector)<-[:IS_IN_SECTOR]-(node)
-            WHERE (node.TC_Approved=$isTCApproved AND size($sectors)=0) OR (node.TC_Approved=$isTCApproved AND size($sectors)>0 AND s.Id IN $sectors)        
-            UNWIND
-              CASE
-              WHEN $isExisting=false
-              THEN (node)-[:IS_IN]->(:Model {ModelRef:'RDT'})
-              ELSE (node)-[:IS_IN]->(:Model {ModelRef:'RDT'}) OR (node)<-[:TEMPLATE_TO]-(:Space)-[:IS_IN]->(:Model {ModelRef:'RDT'})
-              END AS result
-            RETURN node`,
-          args
-        )        
-        return result.records.map(x => x._fields[0].properties)
-      } finally {
-        await session.close()
-      }
+  //     const session = context.driver.session();
+  //     try {
+  //       const result = await session.run(
+  //         `CALL db.index.fulltext.queryNodes('fulltext_index_space_name', $searchString + '~')
+  //           YIELD node
+  //           WITH node
+  //           MATCH (s:Sector)<-[:IS_IN_SECTOR]-(node)
+  //           WHERE (node.TC_Approved=$isTCApproved AND size($sectors)=0) OR (node.TC_Approved=$isTCApproved AND size($sectors)>0 AND s.Id IN $sectors)        
+  //           UNWIND
+  //             CASE
+  //             WHEN $isExisting=false
+  //             THEN (node)-[:IS_IN]->(:Model {ModelRef:'RDT'})
+  //             ELSE (node)-[:IS_IN]->(:Model {ModelRef:'RDT'}) OR (node)<-[:TEMPLATE_TO]-(:Space)-[:IS_IN]->(:Model {ModelRef:'RDT'})
+  //             END AS result
+  //           RETURN node`,
+  //         args
+  //       )        
+  //       return result.records.map(x => x._fields[0].properties)
+  //     } finally {
+  //       await session.close()
+  //     }
 
-    }
-  }
+  //   }
+  // }
 }
 
 module.exports = resolvers;
