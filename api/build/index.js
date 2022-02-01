@@ -4,10 +4,6 @@ var _graphqlSchema = require("./graphql-schema");
 
 var graphqlschema = _interopRequireWildcard(_graphqlSchema);
 
-var _JsonScalarType = require("./units/JsonScalarType");
-
-var _JsonScalarType2 = _interopRequireDefault(_JsonScalarType);
-
 var _apolloServerExpress = require("apollo-server-express");
 
 var _apolloServerCore = require("apollo-server-core");
@@ -26,10 +22,6 @@ var _dotenv2 = _interopRequireDefault(_dotenv);
 
 require("babel-polyfill");
 
-var _UnitFloatScalarType = require("./units/UnitFloatScalarType");
-
-var _UnitFloatScalarType2 = _interopRequireDefault(_UnitFloatScalarType);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -40,7 +32,12 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
  * https://www.apollographql.com/docs/apollo-server/integrations/middleware/#apollo-server-express
  */
 
+var morgan = require('morgan');
+var passport = require('passport');
+var BearerStrategy = require('passport-azure-ad').BearerStrategy;
 var cors = require('cors');
+
+var config = require('./authConfig');
 var routeGuard = require('./utils/guard');
 
 var neo4j = require("neo4j-driver");
@@ -48,37 +45,40 @@ var neo4j = require("neo4j-driver");
 var _require = require("@neo4j/graphql"),
     Neo4jGraphQL = _require.Neo4jGraphQL;
 
-var getUser = require('./utils/permissions');
+var resolvers = require("./utils/resolvers");
 
 // Set environment variables from ../.env
 _dotenv2.default.config();
+
+var options = {
+  identityMetadata: "https://" + process.env.AZURE_METADATA_AUTHORITY + "/" + process.env.AZURE_CREDENTIALS_TENANTID + "/" + process.env.AZURE_METADATA_VERSION + "/" + process.env.AZURE_METADATA_DISCOVERY,
+  issuer: "https://" + process.env.AZURE_METADATA_AUTHORITY + "/" + process.env.AZURE_CREDENTIALS_TENANTID + "/" + process.env.AZURE_METADATA_VERSION,
+  clientID: process.env.AZURE_CREDENTIALS_CLIENTID,
+  audience: process.env.AZURE_CREDENTIALS_AUDIENCE, // audience is this application
+  validateIssuer: process.env.AZURE_SETTINGS_VALIDATE_ISSUER,
+  passReqToCallback: process.env.AZURE_SETTINGS_PASS_REQUEST_TO_CALLBACK,
+  loggingLevel: process.env.AZURE_SETTINGS_LOGGING_LEVEL
+};
+
+var bearerStrategy = new BearerStrategy(options, function (token, done) {
+  // Send user info using the second argument
+  done(null, {}, token);
+});
 
 // Create express app
 var app = (0, _express2.default)();
 var httpServer = _http2.default.createServer(app);
 
+app.use(morgan('dev'));
 app.use(_express2.default.json());
 app.use(cors());
 
-// Validate token, check for role and serve
-app.use(routeGuard);
+app.use(passport.initialize());
 
-// List all custom resolvers
-var resolvers = {
-  UnitFloat: new _UnitFloatScalarType2.default("UnitFloat"),
-  Meters: new _UnitFloatScalarType2.default("Meters", "m"),
-  SquareMeters: new _UnitFloatScalarType2.default("SquareMeters", "m2"),
-  CubicMilliMeters: new _UnitFloatScalarType2.default("CubicMilliMeters", "mm3"),
-  CubicMeters: new _UnitFloatScalarType2.default("CubicMeters", "m3"),
-  Amperes: new _UnitFloatScalarType2.default("Amperes", "A"),
-  Kiloamperes: new _UnitFloatScalarType2.default("Kiloamperes", "kA"),
-  Milliamperes: new _UnitFloatScalarType2.default("Milliamperes", "mA"),
-  Watts: new _UnitFloatScalarType2.default("Watts", "W"),
-  VoltAmperes: new _UnitFloatScalarType2.default("VoltAmperes", "VA"),
-  LitersPerSecond: new _UnitFloatScalarType2.default("LitersPerSecond", "l_per_s"),
-  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
-  JsonParam: new _JsonScalarType2.default("JsonParam")
-};
+passport.use(bearerStrategy);
+
+// Validate token, check for role and serve
+app.use(passport.authenticate('oauth-bearer', { session: false }), routeGuard);
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
@@ -101,32 +101,31 @@ var neo4jGraphQL = new Neo4jGraphQL({
 
 var schema = neo4jGraphQL.schema;
 
-var server = new _apolloServerExpress.ApolloServer({
-  typeDefs: typeDefs,
-  resolvers: resolvers,
-  schema: schema,
-  context: function context(_ref) {
-    var req = _ref.req;
-
-    // Try to retrieve a user from the request token
-    var user = req.user;
-
-    // optionally block the user
-    // we could also check user roles/permissions here
-    //if (!user) throw new AuthenticationError('you must be logged in');
-
-    // Add the user to the context
-    return { user: user };
-  },
-  plugins: [(0, _apolloServerCore.ApolloServerPluginDrainHttpServer)({ httpServer: httpServer })]
-});
-
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema
  * injecting the Neo4j driver instance into the context object
  * so it is available in the  generated resolvers
  * to connect to the database.
  */
+var server = new _apolloServerExpress.ApolloServer({
+  context: function context(_ref) {
+    var req = _ref.req;
+
+
+    // Try to retrieve a user from the request token
+    var user = req.user;
+
+    // optionally block the user according to roles/permissions
+    var roles = user.roles;
+
+    // Add the user to the context
+    return { user: user, driver: driver };
+  },
+  typeDefs: typeDefs,
+  schema: schema,
+  plugins: [(0, _apolloServerCore.ApolloServerPluginDrainHttpServer)({ httpServer: httpServer })]
+});
+
 var startServer = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var port, path;

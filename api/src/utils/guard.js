@@ -1,15 +1,14 @@
 const jwt_decode = require('jwt-decode');
 const config = require('../authConfig');
-// const handleOverage = require('./overage');
 
-const routeGuard = (req, res, next) => {
+const routeGuard = async (req, res, next) => {
 
     // Get the user token from the headers.
     const token = req.headers.authorization;
 
     if (!token) return res.status(401).json({ error: "Authorization token not found. You must be logged in." })
 
-    const decoded = jwt_decode(token)
+    const decoded = jwt_decode(token)  
 
     if (!decoded.groups) {
 
@@ -28,8 +27,13 @@ const routeGuard = (req, res, next) => {
                     return res.status(403).json({ error: 'User does not have the group' });
                 }
                 else {
+                    //add user & roles
                     req.user = decoded;
-                    req.user.roles = intersection;                    
+                    req.user.roles = intersection;
+                    //prioritise autho clearance
+                    let auth = intersection.map(x=>x.role)
+                    if(auth.includes("Admin"))req.user.auth="Admin"
+                    else req.user.auth="Member"
                 }
             } else {
                 return res.status(403).json({ error: 'Method not allowed' });

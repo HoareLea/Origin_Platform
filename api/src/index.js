@@ -5,54 +5,63 @@
  */
 
 import * as graphqlschema from "./graphql-schema";
-import JsonScalarType from "./units/JsonScalarType"
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
 import express from "express";
 import dotenv from "dotenv";
 import "babel-polyfill";
-import UnitFloatScalarType from "./units/UnitFloatScalarType"
 
+
+const morgan = require('morgan');
+const passport = require('passport');
+const BearerStrategy = require('passport-azure-ad').BearerStrategy;
 const cors = require('cors');
+
+const config = require('./authConfig');
 const routeGuard = require('./utils/guard');
 
 const neo4j = require("neo4j-driver");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
-const getUser = require('./utils/permissions');
+const resolvers = require("./utils/resolvers")
 
 // Set environment variables from ../.env
 dotenv.config();
+
+// Token validation options for azureAD
+const options = {
+  identityMetadata: `https://${process.env.AZURE_METADATA_AUTHORITY}/${process.env.AZURE_CREDENTIALS_TENANTID}/${process.env.AZURE_METADATA_VERSION}/${process.env.AZURE_METADATA_DISCOVERY}`,
+  issuer: `https://${process.env.AZURE_METADATA_AUTHORITY}/${process.env.AZURE_CREDENTIALS_TENANTID}/${process.env.AZURE_METADATA_VERSION}`,
+  clientID: process.env.AZURE_CREDENTIALS_CLIENTID,
+  audience: process.env.AZURE_CREDENTIALS_AUDIENCE, // audience is this application
+  validateIssuer: process.env.AZURE_SETTINGS_VALIDATE_ISSUER,
+  passReqToCallback: process.env.AZURE_SETTINGS_PASS_REQUEST_TO_CALLBACK,
+  loggingLevel: process.env.AZURE_SETTINGS_LOGGING_LEVEL,
+};
+
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+  // Send user info using the second argument
+  done(null, {}, token);
+});
 
 // Create express app
 const app = express();
 const httpServer = http.createServer(app);
 
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors());
 
-// Validate token, check for role and serve
-app.use(  
-  routeGuard,  
-);
+// Add passport azure AD middleware 
+app.use(passport.initialize());
+passport.use(bearerStrategy);
 
-// List all custom resolvers
-const resolvers = {
-  UnitFloat: new UnitFloatScalarType("UnitFloat"),
-  Meters: new UnitFloatScalarType("Meters", "m"),
-  SquareMeters: new UnitFloatScalarType("SquareMeters", "m2"),
-  CubicMilliMeters: new UnitFloatScalarType("CubicMilliMeters", "mm3"),
-  CubicMeters: new UnitFloatScalarType("CubicMeters", "m3"),
-  Amperes: new UnitFloatScalarType("Amperes", "A"),
-  Kiloamperes: new UnitFloatScalarType("Kiloamperes", "kA"),
-  Milliamperes: new UnitFloatScalarType("Milliamperes", "mA"),
-  Watts: new UnitFloatScalarType("Watts", "W"),
-  VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
-  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),
-  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
-  JsonParam: new JsonScalarType("JsonParam")
-};
+// Validate token, check for role and serve
+app.use(
+  passport.authenticate('oauth-bearer', { session: false }),
+  routeGuard,
+);
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
@@ -81,29 +90,30 @@ const neo4jGraphQL = new Neo4jGraphQL({
 
 const schema = neo4jGraphQL.schema;
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  schema,
-  context: ({ req }) => {
-    // Try to retrieve a user from the request token
-    const user = req.user;
-    
-    // optionally block the user according to roles/permissions
-    const roles = user.roles;
-
-    // Add the user to the context
-    return { user };
-  },
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});
-
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema
  * injecting the Neo4j driver instance into the context object
  * so it is available in the  generated resolvers
  * to connect to the database.
  */
+const server = new ApolloServer({
+  context: ({ req }) => {
+
+    // Try to retrieve a user from the request token
+    const user = req.user;
+
+    // optionally block the user according to roles/permissions
+    const roles = user.roles;
+
+    // Add the user to the context
+    return { user, driver };
+  },
+  typeDefs,
+  schema,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+});
+
+
 const startServer = async () => {
   await server.start();
 
