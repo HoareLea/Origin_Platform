@@ -50,6 +50,7 @@ var resolvers = require("./utils/resolvers");
 // Set environment variables from ../.env
 _dotenv2.default.config();
 
+// Token validation options for azureAD
 var options = {
   identityMetadata: "https://" + process.env.AZURE_METADATA_AUTHORITY + "/" + process.env.AZURE_CREDENTIALS_TENANTID + "/" + process.env.AZURE_METADATA_VERSION + "/" + process.env.AZURE_METADATA_DISCOVERY,
   issuer: "https://" + process.env.AZURE_METADATA_AUTHORITY + "/" + process.env.AZURE_CREDENTIALS_TENANTID + "/" + process.env.AZURE_METADATA_VERSION,
@@ -73,8 +74,8 @@ app.use(morgan('dev'));
 app.use(_express2.default.json());
 app.use(cors());
 
+// Add passport azure AD middleware 
 app.use(passport.initialize());
-
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
