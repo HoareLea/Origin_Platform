@@ -4,10 +4,6 @@ var _graphqlSchema = require("./graphql-schema");
 
 var graphqlschema = _interopRequireWildcard(_graphqlSchema);
 
-var _JsonScalarType = require("./units/JsonScalarType");
-
-var _JsonScalarType2 = _interopRequireDefault(_JsonScalarType);
-
 var _apolloServerExpress = require("apollo-server-express");
 
 var _apolloServerCore = require("apollo-server-core");
@@ -26,10 +22,6 @@ var _dotenv2 = _interopRequireDefault(_dotenv);
 
 require("babel-polyfill");
 
-var _UnitFloatScalarType = require("./units/UnitFloatScalarType");
-
-var _UnitFloatScalarType2 = _interopRequireDefault(_UnitFloatScalarType);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -45,31 +37,17 @@ var neo4j = require("neo4j-driver");
 var _require = require("@neo4j/graphql"),
     Neo4jGraphQL = _require.Neo4jGraphQL;
 
+// List all custom resolvers
+
+
+var resolvers = require("./utils/resolvers");
+
 // Set environment variables from ../.env
-
-
 _dotenv2.default.config();
 
 // Create express app
 var app = (0, _express2.default)();
 var httpServer = _http2.default.createServer(app);
-
-// List all custom resolvers
-var resolvers = {
-  UnitFloat: new _UnitFloatScalarType2.default("UnitFloat"),
-  Meters: new _UnitFloatScalarType2.default("Meters", "m"),
-  SquareMeters: new _UnitFloatScalarType2.default("SquareMeters", "m2"),
-  CubicMilliMeters: new _UnitFloatScalarType2.default("CubicMilliMeters", "mm3"),
-  CubicMeters: new _UnitFloatScalarType2.default("CubicMeters", "m3"),
-  Amperes: new _UnitFloatScalarType2.default("Amperes", "A"),
-  Kiloamperes: new _UnitFloatScalarType2.default("Kiloamperes", "kA"),
-  Milliamperes: new _UnitFloatScalarType2.default("Milliamperes", "mA"),
-  Watts: new _UnitFloatScalarType2.default("Watts", "W"),
-  VoltAmperes: new _UnitFloatScalarType2.default("VoltAmperes", "VA"),
-  LitersPerSecond: new _UnitFloatScalarType2.default("LitersPerSecond", "l_per_s"),
-  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
-  JsonParam: new _JsonScalarType2.default("JsonParam")
-};
 
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema

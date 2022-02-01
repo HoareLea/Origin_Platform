@@ -5,17 +5,18 @@
  */
 
 import * as graphqlschema from "./graphql-schema";
-import JsonScalarType from "./units/JsonScalarType"
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
 import express from "express";
 import dotenv from "dotenv";
 import "babel-polyfill";
-import UnitFloatScalarType from "./units/UnitFloatScalarType"
 
 const neo4j = require("neo4j-driver");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
+
+// List all custom resolvers
+const resolvers = require("./utils/resolvers")
 
 // Set environment variables from ../.env
 dotenv.config();
@@ -23,23 +24,6 @@ dotenv.config();
 // Create express app
 const app = express();
 const httpServer = http.createServer(app);
-
-// List all custom resolvers
-const resolvers = {
-  UnitFloat: new UnitFloatScalarType("UnitFloat"),
-  Meters: new UnitFloatScalarType("Meters", "m"),
-  SquareMeters: new UnitFloatScalarType("SquareMeters", "m2"),
-  CubicMilliMeters: new UnitFloatScalarType("CubicMilliMeters", "mm3"),
-  CubicMeters: new UnitFloatScalarType("CubicMeters", "m3"),
-  Amperes: new UnitFloatScalarType("Amperes", "A"),
-  Kiloamperes: new UnitFloatScalarType("Kiloamperes", "kA"),
-  Milliamperes: new UnitFloatScalarType("Milliamperes", "mA"),
-  Watts: new UnitFloatScalarType("Watts", "W"),
-  VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
-  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),
-  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
-  JsonParam: new JsonScalarType("JsonParam")
-};
 
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema
