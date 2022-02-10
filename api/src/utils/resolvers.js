@@ -22,7 +22,7 @@ const resolvers = {
   //     console.log('CUSTOM RESOLVER')
   //     console.log(args)
   //     if (args.searchString == '') args.searchString = "*";
-
+  //     console.log(info);
   //     const session = context.driver.session();
   //     try {
   //       const result = await session.run(
@@ -40,6 +40,7 @@ const resolvers = {
   //           RETURN node`,
   //         args
   //       )        
+  //       console.log(result.records);        
   //       return result.records.map(x => x._fields[0].properties)
   //     } finally {
   //       await session.close()
