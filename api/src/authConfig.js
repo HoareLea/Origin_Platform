@@ -1,4 +1,4 @@
-{    
+module.exports = {    
     "accessMatrix": {
         "graphql": {
             "path": "/graphql",
@@ -21,4 +21,4 @@
             ]
         }
     }
-}
+};

@@ -45,7 +45,9 @@ var neo4j = require("neo4j-driver");
 var _require = require("@neo4j/graphql"),
     Neo4jGraphQL = _require.Neo4jGraphQL;
 
-<<<<<<< HEAD
+// List of all custom resolvers
+
+
 var resolvers = require("./utils/resolvers");
 
 // Set environment variables from ../.env
@@ -66,21 +68,11 @@ var bearerStrategy = new BearerStrategy(options, function (token, done) {
   // Send user info using the second argument
   done(null, {}, token);
 });
-=======
-// List all custom resolvers
-
-
-var resolvers = require("./utils/resolvers");
-
-// Set environment variables from ../.env
-_dotenv2.default.config();
->>>>>>> bf6d401b466e9cc77e8b36fb29cda5751b5993c2
 
 // Create express app
 var app = (0, _express2.default)();
 var httpServer = _http2.default.createServer(app);
 
-<<<<<<< HEAD
 app.use(morgan('dev'));
 app.use(_express2.default.json());
 app.use(cors());
@@ -113,8 +105,6 @@ var neo4jGraphQL = new Neo4jGraphQL({
 
 var schema = neo4jGraphQL.schema;
 
-=======
->>>>>>> bf6d401b466e9cc77e8b36fb29cda5751b5993c2
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema
  * injecting the Neo4j driver instance into the context object
