@@ -24,6 +24,7 @@ const routeGuard = require('./utils/guard');
 const neo4j = require("neo4j-driver");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
+// List of all custom resolvers
 const resolvers = require("./utils/resolvers")
 
 // Set environment variables from ../.env
