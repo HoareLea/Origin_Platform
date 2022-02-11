@@ -53,6 +53,13 @@ var resolvers = require("./utils/resolvers");
 // Set environment variables from ../.env
 _dotenv2.default.config();
 
+// Specify port and path for GraphQL endpoint
+//this is the internal listen port for the server
+//when used in a docker container, or, the external port
+//when not used in a container
+var port = process.env.GRAPHQL_LISTEN_PORT || 4001;
+var path = "/graphql";
+
 // Token validation options for azureAD
 var options = {
   identityMetadata: "https://" + process.env.AZURE_METADATA_AUTHORITY + "/" + process.env.AZURE_CREDENTIALS_TENANTID + "/" + process.env.AZURE_METADATA_VERSION + "/" + process.env.AZURE_METADATA_DISCOVERY,
@@ -82,7 +89,11 @@ app.use(passport.initialize());
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
-app.use(passport.authenticate('oauth-bearer', { session: false }), routeGuard);
+app.use(path, passport.authenticate('oauth-bearer', { session: false }), routeGuard);
+
+app.use('/testing', function (req, res, next) {
+  res.send('This is a testing route!');
+});
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
@@ -132,7 +143,6 @@ var server = new _apolloServerExpress.ApolloServer({
 
 var startServer = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var port, path;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -148,21 +158,15 @@ var startServer = function () {
             */
             server.applyMiddleware({ app: app });
 
-            // Specify port and path for GraphQL endpoint
-            //this is the internal listen port for the server
-            //when used in a docker container, or, the external port
-            //when not used in a container
-            port = process.env.GRAPHQL_LISTEN_PORT || 4001;
-            path = "/graphql";
-            _context.next = 7;
+            _context.next = 5;
             return new Promise(function (resolve) {
               return httpServer.listen({ port: port, path: path }, resolve);
             });
 
-          case 7:
+          case 5:
             console.log("\uD83D\uDE80 Server listening at http://localhost:" + port + path);
 
-          case 8:
+          case 6:
           case "end":
             return _context.stop();
         }

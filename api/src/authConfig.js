@@ -1,7 +1,7 @@
 module.exports = {    
     "accessMatrix": {
         "graphql": {
-            "path": "/graphql",
+            "path": "/",
             "methods": [
                 "GET",
                 "POST",

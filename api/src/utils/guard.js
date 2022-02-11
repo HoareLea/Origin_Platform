@@ -15,9 +15,8 @@ const routeGuard = async (req, res, next) => {
         return res.status(403).json({ error: 'No group claim found!' });
 
     } else {
-        const groups = decoded.groups;
+        const groups = decoded.groups;        
         
-
         // Get access control - compare with config
         if (req.path.includes(config.accessMatrix.graphql.path)) {
             if (config.accessMatrix.graphql.methods.includes(req.method)) {

@@ -30,6 +30,13 @@ const resolvers = require("./utils/resolvers")
 // Set environment variables from ../.env
 dotenv.config();
 
+// Specify port and path for GraphQL endpoint
+//this is the internal listen port for the server
+//when used in a docker container, or, the external port
+//when not used in a container
+const port = process.env.GRAPHQL_LISTEN_PORT || 4001;
+const path = "/graphql";
+
 // Token validation options for azureAD
 const options = {
   identityMetadata: `https://${process.env.AZURE_METADATA_AUTHORITY}/${process.env.AZURE_CREDENTIALS_TENANTID}/${process.env.AZURE_METADATA_VERSION}/${process.env.AZURE_METADATA_DISCOVERY}`,
@@ -59,7 +66,7 @@ app.use(passport.initialize());
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
-app.use(
+app.use(path,
   passport.authenticate('oauth-bearer', { session: false }),
   routeGuard,
 );
@@ -123,13 +130,6 @@ const startServer = async () => {
   * This also also allows us to specify a path for the GraphQL endpoint
   */
   server.applyMiddleware({ app });
-
-  // Specify port and path for GraphQL endpoint
-  //this is the internal listen port for the server
-  //when used in a docker container, or, the external port
-  //when not used in a container
-  const port = process.env.GRAPHQL_LISTEN_PORT || 4001;
-  const path = "/graphql";
 
   await new Promise(resolve => httpServer.listen({ port: port, path: path }, resolve));
   console.log(`🚀 Server listening at http://localhost:${port}${path}`);
