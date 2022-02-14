@@ -11,6 +11,8 @@ import http from 'http';
 import express from "express";
 import dotenv from "dotenv";
 import "babel-polyfill";
+import { getIntrospectionQuery, introspectionFromSchema } from "graphql";
+const jwt_decode = require('jwt-decode');
 
 
 const morgan = require('morgan');
@@ -66,10 +68,20 @@ app.use(passport.initialize());
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
-app.use(path,
-  passport.authenticate('oauth-bearer', { session: false }),
+app.use(path, function (req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).json({ error: "Authorization token not found. You must be logged in." })
+  const decoded = jwt_decode(token)
+  // @TODO: remove temporary workaround and validate token with azure
+  if (process.env.ALLOWED_APPS.split(',').includes(decoded.oid) && decoded.idtyp != "app") {
+    passport.authenticate('oauth-bearer', { session: false })
+  }
+  next();
+},
   routeGuard,
 );
+
+
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
@@ -136,5 +148,10 @@ const startServer = async () => {
 }
 
 startServer();
+
+app.use('/schema', function (req, res) {
+  const intro = getIntrospectionQuery(schema)
+  res.send(JSON.stringify(schema));
+})
 
 module.exports = app;

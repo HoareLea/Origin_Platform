@@ -22,6 +22,8 @@ var _dotenv2 = _interopRequireDefault(_dotenv);
 
 require("babel-polyfill");
 
+var _graphql = require("graphql");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -31,6 +33,8 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
  * Apollo server express based on docs
  * https://www.apollographql.com/docs/apollo-server/integrations/middleware/#apollo-server-express
  */
+
+var jwt_decode = require('jwt-decode');
 
 var morgan = require('morgan');
 var passport = require('passport');
@@ -89,11 +93,15 @@ app.use(passport.initialize());
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
-app.use(path, passport.authenticate('oauth-bearer', { session: false }), routeGuard);
-
-app.use('/testing', function (req, res, next) {
-  res.send('This is a testing route!');
-});
+app.use(path, function (req, res, next) {
+  var token = req.headers.authorization;
+  if (!token) return res.status(401).json({ error: "Authorization token not found. You must be logged in." });
+  var decoded = jwt_decode(token);
+  if (process.env.ALLOWED_APPS.split(',').includes(decoded.oid) && decoded.idtyp != "app") {
+    passport.authenticate('oauth-bearer', { session: false });
+  }
+  next();
+}, routeGuard);
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
@@ -180,5 +188,10 @@ var startServer = function () {
 }();
 
 startServer();
+
+app.use('/schema', function (req, res) {
+  var intro = (0, _graphql.getIntrospectionQuery)(schema);
+  res.send(JSON.stringify(schema));
+});
 
 module.exports = app;
