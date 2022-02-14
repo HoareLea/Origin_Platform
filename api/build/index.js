@@ -34,14 +34,11 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
  * https://www.apollographql.com/docs/apollo-server/integrations/middleware/#apollo-server-express
  */
 
-var jwt_decode = require('jwt-decode');
-
 var morgan = require('morgan');
 var passport = require('passport');
 var BearerStrategy = require('passport-azure-ad').BearerStrategy;
 var cors = require('cors');
 
-var config = require('./authConfig');
 var routeGuard = require('./utils/guard');
 
 var neo4j = require("neo4j-driver");
@@ -93,15 +90,7 @@ app.use(passport.initialize());
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
-app.use(path, function (req, res, next) {
-  var token = req.headers.authorization;
-  if (!token) return res.status(401).json({ error: "Authorization token not found. You must be logged in." });
-  var decoded = jwt_decode(token);
-  if (process.env.ALLOWED_APPS.split(',').includes(decoded.oid) && decoded.idtyp != "app") {
-    passport.authenticate('oauth-bearer', { session: false });
-  }
-  next();
-}, routeGuard);
+app.use(path, passport.authenticate('oauth-bearer', { session: false }), routeGuard);
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
@@ -136,7 +125,7 @@ var server = new _apolloServerExpress.ApolloServer({
 
 
     // Try to retrieve a user from the request token
-    var jwt = req.user;
+    var jwt = req ? req.user : {};
 
     // optionally block the user according to roles/permissions
     var roles = jwt.roles;
@@ -189,9 +178,33 @@ var startServer = function () {
 
 startServer();
 
-app.use('/schema', function (req, res) {
-  var intro = (0, _graphql.getIntrospectionQuery)(schema);
-  res.send(JSON.stringify(schema));
-});
+app.use('/schema', function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
+    var introspectionQuery, data;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            introspectionQuery = (0, _graphql.getIntrospectionQuery)({});
+            _context2.next = 3;
+            return server.executeOperation({ query: introspectionQuery });
+
+          case 3:
+            data = _context2.sent;
+
+            res.send(data);
+
+          case 5:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, undefined);
+  }));
+
+  return function (_x, _x2) {
+    return _ref3.apply(this, arguments);
+  };
+}());
 
 module.exports = app;

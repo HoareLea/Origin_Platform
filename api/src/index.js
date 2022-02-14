@@ -11,16 +11,13 @@ import http from 'http';
 import express from "express";
 import dotenv from "dotenv";
 import "babel-polyfill";
-import { getIntrospectionQuery, introspectionFromSchema } from "graphql";
-const jwt_decode = require('jwt-decode');
-
+import { getIntrospectionQuery } from "graphql";
 
 const morgan = require('morgan');
 const passport = require('passport');
 const BearerStrategy = require('passport-azure-ad').BearerStrategy;
 const cors = require('cors');
 
-const config = require('./authConfig');
 const routeGuard = require('./utils/guard');
 
 const neo4j = require("neo4j-driver");
@@ -68,19 +65,10 @@ app.use(passport.initialize());
 passport.use(bearerStrategy);
 
 // Validate token, check for role and serve
-app.use(path, function (req, res, next) {
-  const token = req.headers.authorization;
-  if (!token) return res.status(401).json({ error: "Authorization token not found. You must be logged in." })
-  const decoded = jwt_decode(token)
-  // @TODO: remove temporary workaround and validate token with azure
-  if (process.env.ALLOWED_APPS.split(',').includes(decoded.oid) && decoded.idtyp != "app") {
-    passport.authenticate('oauth-bearer', { session: false })
-  }
-  next();
-},
+app.use(path,
+  passport.authenticate('oauth-bearer', { session: false }),
   routeGuard,
 );
-
 
 
 /*
@@ -120,7 +108,7 @@ const server = new ApolloServer({
   context: ({ req }) => {
 
     // Try to retrieve a user from the request token
-    const jwt = req.user;
+    const jwt = (req)?req.user:{};
 
     // optionally block the user according to roles/permissions
     const roles = jwt.roles;
@@ -149,9 +137,10 @@ const startServer = async () => {
 
 startServer();
 
-app.use('/schema', function (req, res) {
-  const intro = getIntrospectionQuery(schema)
-  res.send(JSON.stringify(schema));
+app.use('/schema', async (req, res) => {
+  const introspectionQuery = getIntrospectionQuery({});
+  const data = await server.executeOperation({ query: introspectionQuery });
+  res.send(data);
 })
 
 module.exports = app;
