@@ -27,7 +27,7 @@ services:
       - ./Dependents/${NEO4j_NAME}/conf:/config
 
   api:
-    image: willhl2/origin-api:latest
+    build: ./api
     hostname: ${GQL_NAME}
     ports:
       - ${GQL_PORT}:4002
