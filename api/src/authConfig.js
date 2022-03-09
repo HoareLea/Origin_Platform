@@ -11,13 +11,9 @@ module.exports = {
             ],
             "groups": [
                 {
-                    "role": "Admin",
+                    "role": "super-admin",
                     "uuid": "1d473abb-02b5-4564-8825-9d9cf85194b2"
-                },
-                {
-                    "role": "Member",
-                    "uuid": "bb609a0f-06b1-44ca-b97b-95b02253d498"
-                }  
+                }               
             ]
         }
     }

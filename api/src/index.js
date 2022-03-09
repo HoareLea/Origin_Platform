@@ -106,13 +106,9 @@ const schema = neo4jGraphQL.schema;
  */
 const server = new ApolloServer({
   context: ({ req }) => {
-
     // Try to retrieve a user from the request token
-    const jwt = (req)?req.user:{};
-
-    // optionally block the user according to roles/permissions
-    const roles = jwt.roles;
-
+    const jwt = (req) ? req.user : {};
+    
     // Add the user to the context
     return { jwt, driver };
   },
