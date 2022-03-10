@@ -33,7 +33,7 @@ const routeGuard = async (req, res, next) => {
                 // else {
                 // Add user & roles
                 const roles = intersection.map(x => x.role);
-                roles.push("user");
+                
                 req.user.roles = roles;
                 // }
             } else {

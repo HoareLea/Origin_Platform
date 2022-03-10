@@ -12,7 +12,7 @@ module.exports = {
             "groups": [
                 {
                     "role": "super-admin",
-                    "uuid": "1d473abb-02b5-4564-8825-9d9cf85194b2"
+                    "uuid": "f69812ef-5bdd-4254-b5cf-885840130d23"
                 }               
             ]
         }
