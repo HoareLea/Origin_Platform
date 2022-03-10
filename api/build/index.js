@@ -123,13 +123,9 @@ var server = new _apolloServerExpress.ApolloServer({
   context: function context(_ref) {
     var req = _ref.req;
 
-
     // Try to retrieve a user from the request token
     var jwt = req ? req.user : {};
-
-    // optionally block the user according to roles/permissions
-    var roles = jwt.roles;
-
+    console.log(jwt.roles);
     // Add the user to the context
     return { jwt: jwt, driver: driver };
   },
