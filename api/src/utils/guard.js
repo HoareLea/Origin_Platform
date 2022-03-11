@@ -11,31 +11,22 @@ const routeGuard = async (req, res, next) => {
     const decoded = jwt_decode(token)
 
     if (!decoded.groups) {
-
         return res.status(403).json({ error: 'No group claim found!' });
-
     } else {
         const groups = decoded.groups;
 
         // Get access control - compare with config
         if (req.path.includes(config.accessMatrix.graphql.path)) {
             if (config.accessMatrix.graphql.methods.includes(req.method)) {
-
                 req.user = decoded;
 
                 // Group ids to match with allowed groups
                 let intersection = config.accessMatrix.graphql.groups
                     .filter(group => groups.includes(group.uuid));
 
-                // if (intersection.length < 1) {
-                //     return res.status(403).json({ error: 'User does not have the group' });
-                // }
-                // else {
-                // Add user & roles
                 const roles = intersection.map(x => x.role);
-                
+
                 req.user.roles = roles;
-                // }
             } else {
                 return res.status(403).json({ error: 'Method not allowed' });
             }
@@ -46,6 +37,5 @@ const routeGuard = async (req, res, next) => {
 
     next();
 }
-
 
 module.exports = routeGuard;
