@@ -106,12 +106,8 @@ const schema = neo4jGraphQL.schema;
  */
 const server = new ApolloServer({
   context: ({ req }) => {
-
     // Try to retrieve a user from the request token
-    const jwt = (req)?req.user:{};
-
-    // optionally block the user according to roles/permissions
-    const roles = jwt.roles;
+    const jwt = (req) ? req.user : {};
 
     // Add the user to the context
     return { jwt, driver };
@@ -142,5 +138,13 @@ app.use('/schema', async (req, res) => {
   const data = await server.executeOperation({ query: introspectionQuery });
   res.send(data);
 })
+
+app.use('/accesscontrol',
+  passport.authenticate('oauth-bearer', { session: false }),
+  routeGuard,
+  (req, res) => {
+    res.send(req.user.roles);
+  }
+);
 
 module.exports = app;
