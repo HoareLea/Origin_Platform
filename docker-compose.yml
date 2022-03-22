@@ -25,6 +25,7 @@ services:
       - ./Dependents/neo4j/plugins:/plugins
       - ./Dependents/${NEO4j_NAME}/data:/data
       - ./Dependents/${NEO4j_NAME}/conf:/config
+    restart: always
 
   api:
     image: willhl2/origin-api:latest
@@ -55,6 +56,7 @@ services:
     - neo4j
     depends_on:
     - neo4j
+    restart: always
 
 volumes:
   schema:
