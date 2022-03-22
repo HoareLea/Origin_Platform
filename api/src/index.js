@@ -13,6 +13,9 @@ import dotenv from "dotenv";
 import "babel-polyfill";
 import { getIntrospectionQuery } from "graphql";
 
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { OGM } = require("@neo4j/graphql-ogm");
+
 const morgan = require('morgan');
 const passport = require('passport');
 const BearerStrategy = require('passport-azure-ad').BearerStrategy;
@@ -21,10 +24,10 @@ const cors = require('cors');
 const routeGuard = require('./utils/guard');
 
 const neo4j = require("neo4j-driver");
-const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 // List of all custom resolvers
 const resolvers = require("./utils/resolvers")
+const filteredSpacesResolver = require("./utils/ogm-resolver");
 
 // Set environment variables from ../.env
 dotenv.config();
@@ -90,9 +93,36 @@ const driver = neo4j.driver(
   )
 );
 
+const ogm = new OGM({ typeDefs, driver });
+const Space = ogm.model("Space");
+const ogmRes = {
+  Query: {
+    // getSpacesFiltered: async (_source, { modelIds, searchString, filterCategories, filterLevels, sort }) => {
+      getSpacesFiltered: async (parent, args, context, info ) => {
+      let spaces = await Space.find({
+        where: {
+          Models: {
+            Id_IN: args.modelIds
+          }
+        }
+      })
+      console.log(spaces)
+
+
+      if (filterCategories) {
+        spaces = spaces.filter(x => args.filterCategories.includes(x.LatestTemplate.Id))
+      }
+
+      return spaces;
+    }
+  }
+}
+// const allresolvers = Object.assign({}, resolvers, filteredSpacesResolver(Space));
+const allresolvers = Object.assign({}, resolvers, ogmRes);
+
 const neo4jGraphQL = new Neo4jGraphQL({
   typeDefs,
-  resolvers,
+  ogmRes,
   driver
 });
 

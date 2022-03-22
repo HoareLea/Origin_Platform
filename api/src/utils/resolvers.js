@@ -12,8 +12,7 @@ const resolvers = {
   Milliamperes: new UnitFloatScalarType("Milliamperes", "mA"),
   Watts: new UnitFloatScalarType("Watts", "W"),
   VoltAmperes: new UnitFloatScalarType("VoltAmperes", "VA"),
-  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),
-  //LitersPerSecondPerSquareMeters: new UnitFloatScalarType("LitersPerSecondPerSquareMeters", "l_per_s_per_m2"),
+  LitersPerSecond: new UnitFloatScalarType("LitersPerSecond", "l_per_s"),  
   JsonParam: new JsonScalarType("JsonParam"),
 
   //Custom resolver to search for RDT spaces by name, sectors, TC_Approved and isExisting
