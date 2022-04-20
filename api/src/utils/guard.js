@@ -1,5 +1,6 @@
 const jwt_decode = require('jwt-decode');
 const config = require('../authConfig');
+const {setSentryUser} = require('./sentry');
 
 const routeGuard = async (req, res, next) => {
 
@@ -9,6 +10,8 @@ const routeGuard = async (req, res, next) => {
     if (!token) return res.status(401).json({ error: "Authorization token not found. You must be logged in." })
 
     const decoded = jwt_decode(token)
+    // add user to sentry
+    setSentryUser(decoded.preferred_username, decoded.oid);
 
     if (!decoded.groups) {
         return res.status(403).json({ error: 'No group claim found!' });

@@ -12,6 +12,10 @@ import express from "express";
 import dotenv from "dotenv";
 import "babel-polyfill";
 import { getIntrospectionQuery } from "graphql";
+import { initializeSentry} from "./utils/sentry"
+
+// Initialize sentry at top level
+initializeSentry();
 
 const morgan = require('morgan');
 const passport = require('passport');
