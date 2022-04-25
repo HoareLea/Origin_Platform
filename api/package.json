@@ -26,6 +26,8 @@
     "@graphql-tools/load-files": "^6.5.2",
     "@graphql-tools/merge": "^8.2.1",
     "@neo4j/graphql": "^2.5.5",
+    "@sentry/node": "^6.19.6",
+    "@sentry/tracing": "^6.19.6",
     "apollo-server": "^3.4.0",
     "apollo-server-core": "^3.5.0",
     "apollo-server-express": "^3.5.0",
@@ -48,7 +50,7 @@
     "neo4j-driver": "^4.4.4",
     "node-fetch": "^2.6.0",
     "passport": "^0.5.0",
-    "passport-azure-ad": "^4.3.0",
+    "passport-azure-ad": "^4.3.1",
     "passport-jwt": "^4.0.0",
     "uuid": "^8.3.2"
   },
