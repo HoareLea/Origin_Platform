@@ -1,10 +1,14 @@
-import dotenv from "dotenv";
-import * as Sentry from "@sentry/node";
+require('dotenv').config()
+const Sentry= require("@sentry/node");
 // Importing @sentry/tracing patches the global hub for tracing to work.
-import "@sentry/tracing";
+require("@sentry/tracing");
+// import dotenv from "dotenv";
+// import * as Sentry from "@sentry/node";
+// // Importing @sentry/tracing patches the global hub for tracing to work.
+// import "@sentry/tracing";
 
 // Set environment variables from ../.env
-dotenv.config();
+// dotenv.config();
 
 const initializeSentry = () => {
     // Initialize Sentry

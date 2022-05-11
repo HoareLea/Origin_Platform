@@ -1,6 +1,6 @@
 
-import {GraphQLScalarType, Kind, GraphQLError} from "graphql";
-import convert from "convert-units";
+const { GraphQLScalarType, Kind, GraphQLError } = require("graphql");
+const convert = require("convert-units");
 
 function serialize(value, fieldNodes, info) {
 
@@ -19,25 +19,23 @@ function serialize(value, fieldNodes, info) {
   }
 
   let fromUnits = this.defaultUnits;
-  if (!fromUnits || fromUnits === "")
-  {
+  if (!fromUnits || fromUnits === "") {
     fromUnits = info.parentType._fields[fieldNodes[0].name.value].args[0].defaultValue;
   }
 
-  if (fromUnits && fieldNodes && fieldNodes[0] && fieldNodes[0].arguments && fieldNodes[0].arguments[0] && fieldNodes[0].arguments[0].value && fieldNodes[0].arguments[0].value.value)
-  {
+  if (fromUnits && fieldNodes && fieldNodes[0] && fieldNodes[0].arguments && fieldNodes[0].arguments[0] && fieldNodes[0].arguments[0].value && fieldNodes[0].arguments[0].value.value) {
     let reqUnits = fieldNodes[0].arguments[0].value.value;
     return convert(num).from(toConvertValue(fromUnits)).to(toConvertValue(reqUnits));
   }
   return num;
 }
 
-function toConvertValue(graphQLUnit){
-  return graphQLUnit.replace("_per_", "/").replace("_","-");
+function toConvertValue(graphQLUnit) {
+  return graphQLUnit.replace("_per_", "/").replace("_", "-");
 }
 
 function parseValue(value) {
-  
+
   if (typeof value === 'boolean') {
     return value ? 1 : 0;
   }
@@ -65,15 +63,16 @@ function parseLiteral(ast) {
   return parseFloat(ast.value);
 }
 
-  
-export default class UnitFloatScalarType extends GraphQLScalarType{
+
+module.exports = class UnitFloatScalarType extends GraphQLScalarType {
   constructor(name, defaultUnits) {
     super({
       name: name,
       description: 'Float value with unit',
-      serialize:serialize,
-      parseValue:parseValue,
-      parseLiteral:parseLiteral});
+      serialize: serialize,
+      parseValue: parseValue,
+      parseLiteral: parseLiteral
+    });
     this.defaultUnits = defaultUnits;
   }
 }

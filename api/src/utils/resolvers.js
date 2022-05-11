@@ -1,5 +1,5 @@
-import JsonScalarType from "../units/JsonScalarType"
-import UnitFloatScalarType from "../units/UnitFloatScalarType"
+const JsonScalarType= require("../units/JsonScalarType.js");
+const UnitFloatScalarType = require( "../units/UnitFloatScalarType.js");
 
 const resolvers = {
   UnitFloat: new UnitFloatScalarType("UnitFloat"),
