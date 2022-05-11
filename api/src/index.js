@@ -100,6 +100,7 @@ const neo4jGraphQL = new Neo4jGraphQL({
   }
 });
 
+let server;
 const startServer = async () => {
   // const schema = neo4jGraphQL.schema;
   const schema = await neo4jGraphQL.getSchema();
@@ -110,7 +111,7 @@ const startServer = async () => {
    * so it is available in the  generated resolvers
    * to connect to the database.
    */
-  const server = new ApolloServer({
+  server = new ApolloServer({
     context: ({ req }) => {
       // Try to retrieve a user from the request token
       const jwt = (req) ? req.user : {};

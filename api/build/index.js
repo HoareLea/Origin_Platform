@@ -18,8 +18,7 @@ var _require2 = require('apollo-server-core'),
 
 var http = require('http');
 
-var express = require("express"); // require("babel-core/register");
-
+var express = require("express");
 
 require("babel-polyfill");
 
@@ -52,9 +51,7 @@ var _require5 = require("@neo4j/graphql"),
 
 var resolvers = require("./utils/resolvers");
 
-var callbacks = require("./utils/services"); // Set environment variables from ../.env
-// dotenv.config();
-// Specify port and path for GraphQL endpoint
+var callbacks = require("./utils/services"); // Specify port and path for GraphQL endpoint
 //this is the internal listen port for the server
 //when used in a docker container, or, the external port
 //when not used in a container
