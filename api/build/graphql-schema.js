@@ -1,32 +1,32 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getTypeDefs = getTypeDefs;
+var _require = require('@graphql-tools/merge'),
+    mergeTypeDefs = _require.mergeTypeDefs;
 
-var _merge = require("@graphql-tools/merge");
+var _require2 = require('@graphql-tools/load-files'),
+    loadFilesSync = _require2.loadFilesSync;
 
-var _loadFiles = require("@graphql-tools/load-files");
-
-var _path = _interopRequireDefault(require("path"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var path = require("path"); // import { mergeTypeDefs } from '@graphql-tools/merge'
+// import { loadFilesSync } from '@graphql-tools/load-files'
+// import path from "path";
 
 /**
  * Load graphql schemas form schema/Origin_Schema directory recursively
  */
+
+
 function getTypeDefs() {
   var schemaRoot = process.env.SCHEMA_ROOT || "";
   var allSchemaDirs = schemaRoot.split(";").map(function (s) {
-    var schemaDir = _path["default"].join(__dirname, '../../schema/' + s);
-
+    var schemaDir = path.join(__dirname, '../../schema/' + s);
     console.log("Loading GraphQL types from: " + schemaDir);
     return schemaDir;
   });
-  var typesArray = (0, _loadFiles.loadFilesSync)(allSchemaDirs, {
+  var typesArray = loadFilesSync(allSchemaDirs, {
     recursive: true,
     extensions: ['graphql']
   });
-  return (0, _merge.mergeTypeDefs)(typesArray);
+  return mergeTypeDefs(typesArray);
 }
+
+module.exports = getTypeDefs;

@@ -9,7 +9,7 @@ const { ApolloServer } = require("apollo-server-express");
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const http = require('http');
 const express = require("express");
-// import "babel-polyfill";
+require("babel-polyfill");
 require('dotenv').config();
 const { getIntrospectionQuery } = require("graphql");
 const { initializeSentry } = require("./utils/sentry");
@@ -30,9 +30,6 @@ const { Neo4jGraphQL } = require("@neo4j/graphql");
 // List of all custom resolvers and callbacks
 const resolvers = require("./utils/resolvers");
 const callbacks = require("./utils/services");
-
-// Set environment variables from ../.env
-// dotenv.config();
 
 // Specify port and path for GraphQL endpoint
 //this is the internal listen port for the server
@@ -74,7 +71,6 @@ app.use(path,
   passport.authenticate('oauth-bearer', { session: false }),
   routeGuard,
 );
-
 
 /*
   * Create an executable GraphQL schema object from GraphQL type definitions
