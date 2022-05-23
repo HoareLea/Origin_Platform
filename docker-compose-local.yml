@@ -25,10 +25,9 @@ services:
       - ./Dependents/neo4j/plugins:/plugins
       - ./Dependents/${NEO4j_NAME}/data:/data
       - ./Dependents/${NEO4j_NAME}/conf:/config
-    restart: always
 
   api:
-    image: willhl2/origin-api:latest
+    build: ./api
     hostname: ${GQL_NAME}
     ports:
       - ${GQL_PORT}:4002
@@ -56,7 +55,6 @@ services:
     - neo4j
     depends_on:
     - neo4j
-    restart: always
 
 volumes:
   schema:

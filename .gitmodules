@@ -1,4 +1,0 @@
-[submodule "schema/Origin_Schema"]
-	path = schema/Origin_Schema
-	url = https://github.com/HoareLea/Origin_Schema.git
-	branch = dev
