@@ -1,10 +1,10 @@
-import UnitFloatScalarType from "./UnitFloatScalarType"
+const UnitFloatScalarType = require("./UnitFloatScalarType.js");
 
 
 const ScalarUnitResolvers = {
-    SquareMeters : new UnitFloatScalarType("SquareMeters", "m2"),
-    CubicMeters : new UnitFloatScalarType("CubicMeters", "m3")
+    SquareMeters: new UnitFloatScalarType("SquareMeters", "m2"),
+    CubicMeters: new UnitFloatScalarType("CubicMeters", "m3")
 }
 
 
-export default ScalarUnitResolvers
+module.exports = ScalarUnitResolvers

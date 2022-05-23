@@ -1,11 +1,11 @@
 
-import {GraphQLScalarType} from "graphql";
+const { GraphQLScalarType } = require("graphql");
 
 function serialize(value, fieldNodes) {
 
   //value = JSON.stringify(value);
-  
-  if (typeof value === 'string' && value !== '') {    
+
+  if (typeof value === 'string' && value !== '') {
     let asjson = JSON.parse(value)
     return asjson;
   }
@@ -16,7 +16,7 @@ function serialize(value, fieldNodes) {
 
 function parseValue(value) {
 
-  if (typeof value === 'string' && value !== '') {    
+  if (typeof value === 'string' && value !== '') {
     let asjson = JSON.parse(value)
     return asjson;
   }
@@ -31,14 +31,14 @@ function parseLiteral(ast) {
   return JSON.stringify(ast);
 }
 
-  
-export default class JsonScalarType extends GraphQLScalarType{
+module.exports = class JsonScalarType extends GraphQLScalarType {
   constructor(name) {
     super({
       name: name,
       description: 'JSON Value',
-      serialize:serialize,
-      parseValue:parseValue,
-      parseLiteral:parseLiteral});
+      serialize: serialize,
+      parseValue: parseValue,
+      parseLiteral: parseLiteral
+    });
   }
 }
