@@ -4,7 +4,7 @@ WORKDIR /app
 VOLUME /schema
 COPY package.json .
 RUN npm install
-COPY . .
+COPY . ./
 
 EXPOSE 4000
 

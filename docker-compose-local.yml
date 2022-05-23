@@ -25,10 +25,9 @@ services:
       - ./Dependents/neo4j/plugins:/plugins
       - ./Dependents/${NEO4j_NAME}/data:/data
       - ./Dependents/${NEO4j_NAME}/conf:/config
-    restart: always
 
   api:
-    image: willhl2/origin-api:latest
+    build: ./api
     hostname: ${GQL_NAME}
     ports:
       - ${GQL_PORT}:4002
@@ -49,18 +48,13 @@ services:
       - AZURE_METADATA_VERSION=${AZURE_METADATA_VERSION}
       - AZURE_SETTINGS_VALIDATE_ISSUER=${AZURE_SETTINGS_VALIDATE_ISSUER}
       - AZURE_SETTINGS_PASS_REQUEST_TO_CALLBACK=${AZURE_SETTINGS_PASS_REQUEST_TO_CALLBACK}
-      - AZURE_SETTINGS_LOGGING_LEVEL=${AZURE_SETTINGS_LOGGING_LEVEL}
-      - SENTRY_DSN=${SENTRY_DSN}
-      - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}      
-      - SENTRY_RELEASE=${SENTRY_RELEASE}
-      - NODE_ENV=${NODE_ENV}
+      - AZURE_SETTINGS_LOGGING_LEVEL=${AZURE_SETTINGS_LOGGING_LEVEL}      
     volumes:
       - ./schema:/schema
     links:
     - neo4j
     depends_on:
     - neo4j
-    restart: always
 
 volumes:
   schema:
