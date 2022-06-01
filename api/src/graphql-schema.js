@@ -1,9 +1,6 @@
 const { mergeTypeDefs } = require('@graphql-tools/merge');
 const { loadFilesSync } = require('@graphql-tools/load-files');
 const path = require("path");
-// import { mergeTypeDefs } from '@graphql-tools/merge'
-// import { loadFilesSync } from '@graphql-tools/load-files'
-// import path from "path";
 
 /**
  * Load graphql schemas form schema/Origin_Schema directory recursively

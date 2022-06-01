@@ -93,7 +93,9 @@ const driver = neo4j.driver(
 
 const neo4jGraphQL = new Neo4jGraphQL({
   typeDefs,
-  resolvers,
+  ...process.env.API_TARGET === 'ORIGIN' && {
+    resolvers,
+  },
   driver,
   config: {
     callbacks
@@ -119,6 +121,7 @@ const startServer = async () => {
       // Add the user to the context
       return { jwt, driver };
     },
+
     typeDefs,
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],

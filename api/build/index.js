@@ -108,10 +108,11 @@ var neo4jGraphQL = new Neo4jGraphQL({
     callbacks: callbacks
   }
 });
+var server;
 
 var startServer = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var schema, server;
+    var schema;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -143,7 +144,8 @@ var startServer = /*#__PURE__*/function () {
               schema: schema,
               plugins: [ApolloServerPluginDrainHttpServer({
                 httpServer: httpServer
-              })]
+              })],
+              introspection: true
             });
             _context.next = 6;
             return server.start();
