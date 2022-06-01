@@ -13,9 +13,7 @@ const routeGuard = async (req, res, next) => {
     // add user to sentry
     setSentryUser(decoded.preferred_username, decoded.oid);
 
-    if (!decoded.groups) {
-        return res.status(403).json({ error: 'No group claim found!' });
-    } else {
+    if (decoded.groups) {    
         const groups = decoded.groups;
 
         // Get access control - compare with config
