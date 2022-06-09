@@ -2,7 +2,7 @@ version: '3'
 
 services:
   neo4j:
-    image: neo4j:4.4.6
+    image: neo4j:4.3.7
     hostname: ${NEO4j_NAME}
     container_name: ${NEO4j_NAME}
     ports:
@@ -39,7 +39,6 @@ services:
       - GRAPHQL_LISTEN_PORT=4002
       - GRAPHQL_URI=http://${GQL_NAME}:4002/graphql
       - SCHEMA_ROOT=${SCHEMA_ROOT}
-      - API_TARGET=${API_TARGET}
       - AZURE_CREDENTIALS_TENANTID=${AZURE_CREDENTIALS_TENANTID}
       - AZURE_CREDENTIALS_CLIENTID=${AZURE_CREDENTIALS_CLIENTID}
       - AZURE_CREDENTIALS_CLIENT_SECRET=${AZURE_CREDENTIALS_CLIENT_SECRET}
