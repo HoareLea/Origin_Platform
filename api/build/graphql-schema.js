@@ -6,10 +6,7 @@ var _require = require('@graphql-tools/merge'),
 var _require2 = require('@graphql-tools/load-files'),
     loadFilesSync = _require2.loadFilesSync;
 
-var path = require("path"); // import { mergeTypeDefs } from '@graphql-tools/merge'
-// import { loadFilesSync } from '@graphql-tools/load-files'
-// import path from "path";
-
+var path = require("path");
 /**
  * Load graphql schemas form schema/Origin_Schema directory recursively
  */
