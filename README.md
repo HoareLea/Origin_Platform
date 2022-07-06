@@ -3,9 +3,10 @@ GraphQL api based on GRANDStack
 
 ## Quick Start
 
-Cloning the project for the first time:
+Cloning the schema project for the first time:
 
 ```shell
+cd schema
 git clone --recursive https://github.com/HoareLea/Origin_Schema.git
 ```
 
@@ -17,6 +18,12 @@ cd api
 
 ```shell
 npm install
+```
+
+Set environment variables:
+
+```
+cp .env.sample .env 
 ```
 
 Start the GraphQL service:
