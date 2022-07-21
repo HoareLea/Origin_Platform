@@ -152,7 +152,8 @@ var startServer = /*#__PURE__*/function () {
               schema: schema,
               plugins: [ApolloServerPluginDrainHttpServer({
                 httpServer: httpServer
-              })]
+              })],
+              introspection: true
             });
             _context.next = 6;
             return server.start();
